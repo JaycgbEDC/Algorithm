@@ -1,0 +1,184 @@
+Time Limit: 2000/1000 MS (Java/Others)    Memory Limit: 65536/32768 K (Java/Others)
+
+Problem Description
+读入一个只包含 +, -, *, / 的非负整数计算表达式，计算该表达式的值。
+ 
+Input
+测试输入包含若干测试用例，每个测试用例占一行，每行不超过200个字符，整数和运算符之间用一个空格分隔。没有非法表达式。当一行中只有0时输入结束，相应的结果不要输出。
+
+Output
+对每个测试用例输出1行，即该表达式的值，精确到小数点后2位。
+ 
+Sample Input
+1 + 2
+4 + 2 * 5 - 7 / 11
+0
+
+Sample Output
+3.00
+13.36
+
+Source
+浙大计算机研究生复试上机考试-2006年
+
+code:
+//code:栈的应用-简单表达式求值：
+#include <iostream>
+#include <stack>
+#include <vector>
+#include <iomanip>
+using namespace std;
+const int Max_Line_Len = 200;
+
+
+class IPE {                                            //IPE:逆波兰表达式（包含中缀转逆波兰、逆波兰表达式求值） 
+public:
+	void input();
+	void trans();
+	void solve();
+	void output();
+private:
+	char szBuf[Max_Line_Len + 10];
+	vector <char> exp;
+	vector <char> postexp; 
+	stack <char> op;                                    //op:operator 
+	stack <double> rn;                                  //rn:real number
+}; 
+
+
+void IPE::trans() {
+	 for (int i = 0; i < exp.size(); i++) {
+	 	switch (exp[i]) {
+	 		case '+':
+	 		case '-':
+	 			while (! op.empty()) {
+	 				if (op.top() != '(') {
+	 					postexp.push_back(op.top());
+	 					op.pop();
+					 }
+					else break;
+				 }
+				op.push(exp[i]);
+				break;
+			case '*':
+			case '/':
+				while (! op.empty()) {
+					if (op.top() == '*' || op.top() == '/') {
+						postexp.push_back(op.top());
+	 					op.pop();
+					}
+					else break;
+				}
+				op.push(exp[i]);
+				break;
+			case '(':
+				op.push(exp[i]);
+				break;
+			case ')':
+				while (op.top() != '(') {
+					postexp.push_back(op.top());
+					op.pop();
+				}
+				op.pop();
+				break;
+			default:
+				while (exp[i] >= '0' && exp[i] <='9') {
+					postexp.push_back(exp[i]);
+					i++;
+				}
+				postexp.push_back('#');
+				i--;
+				break;
+		 }
+	 }
+	 while (! op.empty()) {
+	 	postexp.push_back(op.top());
+		op.pop();
+	 }
+}
+
+
+void IPE::solve() {
+	double a, b, c;
+	for (int i = 0; i < postexp.size(); i++) {
+		switch (postexp[i]) {
+			case '+':
+				a = rn.top();
+				rn.pop();
+				b = rn.top();
+				rn.pop();
+				c = b + a;
+				rn.push(c);
+				break;
+			case '-':
+				a = rn.top();
+				rn.pop();
+				b = rn.top();
+				rn.pop();
+				c = b - a;
+				rn.push(c);
+				break;
+			case '*':
+				a = rn.top();
+				rn.pop();
+				b = rn.top();
+				rn.pop();
+				c = b * a;
+				rn.push(c);
+				break;
+			case '/':
+				a = rn.top();
+				rn.pop();
+				b = rn.top();
+				rn.pop();
+				if (a != 0) {
+					c = b / a;
+					rn.push(c);
+					break;
+				}
+				else {
+					cout << "除零错误！" <<endl;
+					exit(0);
+				}
+				break;
+			default:
+				c = 0;
+				while (postexp[i] >= '0' && postexp[i] <='9') {
+					c = 10 * c + postexp[i] - '0';                  //‘123’转换为123 
+					i++;
+				}
+				rn.push(c);
+				break;
+		}
+	}
+}
+
+
+void IPE::input() {
+	while (cin.getline(szBuf, Max_Line_Len + 5)) {
+		if (szBuf[0] == '0' && szBuf[1] == '\0') break;
+		exp.clear(); 
+		postexp.clear();
+		int j = 0;
+		while (szBuf[j] != '\0') {
+			if (szBuf[j] != ' ') exp.push_back(szBuf[j]);
+			j++;
+		}
+		trans();
+		solve();
+		output();
+	}
+}
+
+
+void IPE::output() {
+	cout << fixed << setprecision(2) << rn.top() << endl;
+	rn.pop();
+}
+ 
+
+int main() {
+	IPE a;
+	a.input();
+	return 0;
+} 
