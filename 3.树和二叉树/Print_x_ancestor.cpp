@@ -23,7 +23,7 @@ void PrintAncestor(BiTree T, char x)
             return;
         }
         else
-        { //当前结点为空
+        {
             p = s[top];
             if (p->rchild && last != p->rchild)
                 p = p->rchild;

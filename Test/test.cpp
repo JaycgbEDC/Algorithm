@@ -15,43 +15,39 @@ struct BiTNode
     }
 };
 
-void PrintAncestor(BiTNode *T, char x)
+
+BiTNode* Latest_ComnAncestor(BiTNode *T, BiTNode *q1, BiTNode *q2)
 {
-    //打印x的所有祖先
-    BiTNode *s[20];
-    int top = -1;
+    //寻找q1和q2的最近公共祖先（假设q1在q2左边）
+    BiTNode *s[20], *s1[20];
+    int top = -1, top1 = -1;
     BiTNode *p = T, *last;
-    if (NULL == p || x == p->data) //处理第一个元素
-        return;
-    while (p || -1 != top)
-    {
-        if (p && x != p->data)
-        { //当前非空且非x结点方可入栈
+    while(p || -1 != top) {
+        if(p) { //一路向左
             s[++top] = p;
             p = p->lchild;
         }
-        else if (p && x == p->data)
-        { //当前非空且为x直接退栈
-            while (-1 != top)
-            {
-                printf("%d\n", s[top]->data);
-                top--;
-            }
-            return;
-        }
-        else
-        { //当前结点为空
+        else {
             p = s[top];
-            if (p->rchild && last != p->rchild)
+            if (p && p == q1) //找到q1，将s中的祖先复制到辅助栈s1中
+                for (int i = 0; i <= top; i++)
+                    s1[++top1] = s[i];
+            if(p->rchild && p->rchild != last)
                 p = p->rchild;
-            else
-            {
+            else {
                 top--;
+                if (p && p == q2){ //找到q2
+                    int i;
+                    for (i = 0; i <= top && i <= top1 && s[i] == s1[i]; i++);
+                    if (i > 0)
+                        return s[i - 1];
+                }
                 last = p;
                 p = NULL;
             }
         }
     }
+    return NULL;
 }
 
 int main()
@@ -76,7 +72,9 @@ int main()
     root->rchild->lchild->lchild = new BiTNode(7);
     root->rchild->lchild->rchild = new BiTNode(8);
 
-    PrintAncestor(root, 4);
+    BiTNode *p = Latest_ComnAncestor(root, root->rchild->lchild->lchild, root->rchild->lchild->rchild);
+    if(p)
+        cout << p->data << endl;
     system("pause");
     return 0;
 }
