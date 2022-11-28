@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ void PrintAncestor(BiTNode *T, char x)
                 printf("%d\n", s[top]->data);
                 top--;
             }
-            exit(1);
+            return;
         }
         else
         { //当前结点为空
@@ -76,6 +77,6 @@ int main()
     root->rchild->lchild->rchild = new BiTNode(8);
 
     PrintAncestor(root, 4);
-
+    system("pause");
     return 0;
 }
