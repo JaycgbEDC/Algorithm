@@ -34,44 +34,31 @@ void CreateBiTree(FILE *fp, BiTree &T)
 }
 
 
-int Max_Width(BiTNode *T)
+void Pre_ToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2)
 {
-    //求非空二叉树的最大宽度--->层次遍历
-    BiTNode *Q[20];
-    int front = -1, rear = -1;
-    int curl = 0, curw = 0; //curl表示当前层最后一个结点，curw表示当前层宽度
-    int max = 0; //最大二叉树宽
-    BiTNode *p = T;
-    Q[++rear] = p;
-    while(front != rear) {
-        p = Q[++front];
-        curw++;
-        if(p->lchild) {
-            Q[++rear] = p->lchild;
-        }
-        if(p->rchild) {
-            Q[++rear] = p->rchild;
-        }
-        if(front == curl) { //当前出栈结点为当层最后一个结点
-            curl = rear;
-            if(curw > max)
-                max = curw;
-            curw = 0;
-        }
+    //满二叉树，已知先序求后序
+    int half = (h1 - l1) / 2;
+    if(l1 <= h1) {
+        post[h2] = pre[l1];
+        Pre_ToPost(pre, l1 + 1, l1 + half, post, l2, l2 + half - 1); //转换左子树
+        Pre_ToPost(pre, l1 + half +1, h1, post, l2 + half, h2 - 1); //转换右子树
     }
-    return max;
 }
 
 int main()
 {
-    BiTree T = NULL;
-    FILE *fp;
-    fp = fopen("TestData.txt", "r");
-    CreateBiTree(fp, T);
-    fclose(fp);
+    // BiTree T = NULL;
+    // FILE *fp;
+    // fp = fopen("TestData.txt", "r");
+    // CreateBiTree(fp, T);
+    // fclose(fp);
 
-    int a = Max_Width(T);
-    cout << a << endl;
+    ElemType *pre = "ABCDEFG";
+    ElemType post[8];
+    Pre_ToPost(pre, 0, 6, post, 0, 6);
+    for(int i = 0; i <= 6; i++) {
+        cout << post[i] << endl;
+    }
     system("pause");
     return 0;
 }
