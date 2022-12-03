@@ -1,8 +1,10 @@
-#include <iostream>
-#include <stdlib.h>
+/*给定一整数数组A，要求：
+    1. 找出连续子串的和的最小值。
+    2. 若A中全部为正数，输出0，否则输出最小值
+    3. 分析算法的时间复杂度
+*/
 
-using namespace std;
-
+//法一：暴力求解，遍历每一种可能。
 int Brutal_Min1(int A[], int n) {
     int temp = A[0], min = A[0];
     int flag = 0;//A中是否全为正数标志
@@ -20,13 +22,4 @@ int Brutal_Min1(int A[], int n) {
         return min;
     else
         return 0;
-}
-
-int main() {
-    int a[7] = {10, 20, -10, 8, -30, 20};
-    int b = Brutal_Min1(a, 6);
-    cout << b << endl;
-
-    system("pause");
-    return 0;
 }
