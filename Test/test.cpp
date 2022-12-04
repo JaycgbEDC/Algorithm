@@ -4,26 +4,19 @@
 
 using namespace std;
 
-int DpByArray(int A[], int n) {
-    int temp = 0;//记录连续子串最小
-    int min = A[0];
-    for(int i = 0; i < n; i++) {
-        if(temp + A[i] <= A[i])
-            temp = temp + A[i];
-        else
-            temp = A[i];
-        if(temp < min)
-         min = temp;
-    }
-    return min;
+int BiTreeShapeNumber_Dp(int n) {
+    int res = 1;
+    for(int i = n + 2; i <= 2*n; i++) 
+        res = res*i / (i - n);
+    return res;
 }
 
 int main() {
     clock_t start, finish;
     double  duration;
-    int a[7] = {10, 20, -10, 8, -30, 20};
+    int a = 4;
     start = clock();
-    int b = DpByArray(a, 6);
+    int b = BiTreeShapeNumber_Dp(a);
     finish = clock();
     duration = (double)(finish - start) / CLOCKS_PER_SEC;
     printf( "%f seconds\n", duration );
