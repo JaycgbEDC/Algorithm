@@ -1,30 +1,32 @@
 #include <iostream>
 #include <stdlib.h>
+#include "time.h"
 
 using namespace std;
 
-int Brutal_Min1(int A[], int n) {
-    int temp = A[0], min = A[0];
-    int flag = 0;//A中是否全为正数标志
+int DpByArray(int A[], int n) {
+    int temp = 0;//记录连续子串最小
+    int min = A[0];
     for(int i = 0; i < n; i++) {
-        temp = A[i];
-        for(int j = i + 1; j <n; j++) {
-            temp += A[j];
-            if(temp < min)
-                min = temp;
-        }
-        if(A[i] <= 0)
-            flag = 1;
+        if(temp + A[i] <= A[i])
+            temp = temp + A[i];
+        else
+            temp = A[i];
+        if(temp < min)
+         min = temp;
     }
-    if(flag)
-        return min;
-    else
-        return 0;
+    return min;
 }
 
 int main() {
+    clock_t start, finish;
+    double  duration;
     int a[7] = {10, 20, -10, 8, -30, 20};
-    int b = Brutal_Min1(a, 6);
+    start = clock();
+    int b = DpByArray(a, 6);
+    finish = clock();
+    duration = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf( "%f seconds\n", duration );
     cout << b << endl;
 
     system("pause");
